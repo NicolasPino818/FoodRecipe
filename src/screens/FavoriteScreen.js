@@ -20,10 +20,29 @@ export default function FavoriteScreen() {
   // Assuming you have a similar structure for recipes in your Redux store
   const favoriteRecipes = useSelector((state) => state.favorites);
   const favoriteRecipesList = favoriteRecipes?.favoriterecipes || [];
-  console.log(favoriteRecipes.favoriterecipes);
-  console.log('favoriteRecipesList',favoriteRecipesList);
-  
-  
+
+  //console.log(favoriteRecipes.favoriterecipes);
+  //console.log('favoriteRecipesList',favoriteRecipesList);
+
+  const renderItem = ({ item }) => (
+    
+      <TouchableOpacity
+        onPress={() => navigation.navigate("RecipeDetail", item )}
+        style={styles.cardContainer}
+      >
+        <View style={styles.recipeCard}>
+          <Image
+            source={{ uri: item.recipeImage }}
+            style={styles.recipeImage}
+          />
+          <Text style={styles.recipeTitle}>
+            {item.recipeName.length > 20
+              ? item.recipeName.slice(0, 20) + "..."
+              : item.recipeName}
+          </Text>
+        </View>
+      </TouchableOpacity>
+  );
 
   if (favoriteRecipesList.length === 0) {
     return (
@@ -73,6 +92,14 @@ export default function FavoriteScreen() {
       >
         <Text style={{ color: "#fff" }}>Go back</Text>
       </TouchableOpacity>
+
+      <FlatList 
+        style={styles.listContentContainer} 
+        data={favoriteRecipesList} 
+        keyExtractor={(item) => item.idFood.toString()} 
+        renderItem={renderItem}
+      >
+      </FlatList>
     
     </>
   );
