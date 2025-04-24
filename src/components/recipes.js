@@ -7,13 +7,15 @@ export default function Recipe({ categories, foods }) {
   const navigation = useNavigation();
 
   const renderItem = ({ item, index }) => (
-<ArticleCard item={item} index={index} navigation={navigation} />
+    <ArticleCard item={item} index={index} navigation={navigation} />
   );
 
   return (
     <View style={styles.container}>
       <View testID="recipesDisplay">
-            
+        {/* Added FlatList component. */}
+        <FlatList numColumns={2} data={foods} keyExtractor={(item) => item.idFood.toString()} renderItem={renderItem}>
+        </FlatList>
       </View>
     </View>
   );
@@ -24,7 +26,12 @@ const ArticleCard = ({ item, index, navigation }) => {
     <View
       style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15}]} testID="articleDisplay"
     >
-   
+      {/* Navigating the RecipeDetailScreen and passing the props as item */}
+      <TouchableOpacity onPress={() => navigation.navigate("RecipeDetail", item)}>
+        <Image style={styles.articleImage} source={{ uri: item.recipeImage }}></Image>
+        <Text style={styles.articleText}>{item.recipeName}</Text>
+        <Text style={styles.articleDescription}>{item.cookingDescription}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
   },
   articleImage: {
     width: "100%",
-   
+    height: 150,
     borderRadius: 35,
     backgroundColor: "rgba(0, 0, 0, 0.05)", // bg-black/5
   },
