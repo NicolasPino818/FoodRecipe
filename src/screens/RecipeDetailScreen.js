@@ -95,7 +95,7 @@ export default function RecipeDetailScreen(props) {
           </View>
         </View>
 
-        {/* Ingredients */}
+        {/* Ingredients, I had to add the ID my self lol */}
         <View style={styles.sectionContainer} testID="ingredientsList">
           {recipe.ingredients.map((ingredient, index) => (
             <View key={index} style={styles.ingredientItem}>
