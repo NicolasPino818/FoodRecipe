@@ -12,9 +12,40 @@ export default function RecipesFormScreen({ route, navigation }) {
   );
 
   const saverecipe = async () => {
- 
+    try {
+      //New recipe object
+      const newrecipe = { title, image, description };
+  
+      //Getting the custom recipes from storage
+      const storedData = await AsyncStorage.getItem("customrecipes");
+      //If stored data exist then saves it into recipes as an object, otherwise, it saves an empty array
+      let recipes = storedData ? JSON.parse(storedData) : [];
+  
+      //If there is a recipe coming from the prop it triggers the update
+      if (recipeToEdit) {
+        const recipeIndex = recipes.findIndex(
+          (r) => r.title === recipeToEdit.title
+        );
+        if (recipeIndex !== -1) {
+          recipes[recipeIndex] = newrecipe;
+        }
+  
+        if (typeof onrecipeEdited === "function") {
+          onrecipeEdited();
+        }
+      //else it pushes a new one in the array  
+      } else {
+        recipes.push(newrecipe);
+      }
+      //Saves recipes in storage
+      await AsyncStorage.setItem("customrecipes", JSON.stringify(recipes));
+  
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+    }
   };
-
+  
   return (
     <View style={styles.container}>
       <TextInput
