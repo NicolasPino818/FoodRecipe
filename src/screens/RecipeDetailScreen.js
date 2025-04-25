@@ -29,7 +29,7 @@ export default function RecipeDetailScreen(props) {
   const navigation = useNavigation();
 
   const handleToggleFavorite = () => {
-    dispatch(toggleFavorite(recipe)); // Dispatch the recipe to favorites
+    dispatch(toggleFavorite(recipe));
   };
 
   return (
@@ -40,7 +40,16 @@ export default function RecipeDetailScreen(props) {
     >
       {/* recipe Image */}
       <View style={styles.imageContainer} testID="imageContainer">
-        <Image style={styles.recipeImage} source={{uri: recipe.recipeImage}}></Image>
+        {recipe?.recipeImage && typeof recipe.recipeImage === "string" ? (
+          <Image
+            style={styles.recipeImage}
+            source={{ uri: recipe.recipeImage }}
+          />
+        ) : (
+          <Text style={{ color: "#888", fontStyle: "italic" }}>
+            No image available
+          </Text>
+        )}
       </View>
 
       {/* Back Button and Favorite Button */}
@@ -73,7 +82,9 @@ export default function RecipeDetailScreen(props) {
           testID="recipeDetailsContainer"
         >
           <Text style={styles.recipeTitle} testID="recipeTitle">{recipe.recipeName}</Text>
-          <Text style={styles.recipeCategory} testID="recipeCategory">{recipe.category}</Text>
+          <Text style={styles.recipeCategory} testID="recipeCategory">
+            {typeof recipe.category === "string" ? recipe.category : ""}
+          </Text>
         </View>
 
         <View style={styles.miscContainer} testID="miscContainer">
@@ -96,21 +107,27 @@ export default function RecipeDetailScreen(props) {
         </View>
 
         {/* Ingredients, I had to add the ID my self lol */}
-        <View style={styles.sectionContainer} testID="ingredientsList">
-          {recipe.ingredients.map((ingredient, index) => (
-            <View key={index} style={styles.ingredientItem}>
-              <Text style={styles.ingredientText}>
-                {ingredient.ingredientName} {ingredient.measure}
-              </Text>
-            </View>
-          ))}
-        </View>
+        {recipe.ingredients && (
+          <View style={styles.sectionContainer} testID="ingredientsList">
+            {recipe.ingredients.map((ingredient, index) => (
+              <View key={index} style={styles.ingredientItem}>
+                <Text style={styles.ingredientText}>
+                  {ingredient.ingredientName} {ingredient.measure}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
         {/* Instructions */}
         <View style={styles.sectionContainer} testID="sectionContainer">
-          <Text>{recipe.recipeInstructions}</Text>
+          <Text style={styles.sectionTitle}>Instructions</Text>
+          <Text style={styles.instructionsText}>
+            {recipe?.recipeInstructions
+              ? recipe.recipeInstructions
+              : "No instructions provided."}
+          </Text>
         </View>
-        {/* Description */}
       </View>
     </ScrollView>
   );

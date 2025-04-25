@@ -4,6 +4,7 @@ const initialState = {
   favoriterecipes: [], // Updated to handle favorite articles
 };
 
+
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState,
@@ -26,8 +27,15 @@ const favoritesSlice = createSlice({
         state.favoriterecipes.push(recipe);
       }
     },
+    removeFavoriteById: (state, action) => {
+      const idToRemove = action.payload;
+      state.favoriterecipes = state.favoriterecipes.filter(
+        (fav) => fav.idFood !== idToRemove
+      );
+    },
+    
   },
 });
 
-export const { toggleFavorite } = favoritesSlice.actions;
+export const { toggleFavorite, removeFavoriteById } = favoritesSlice.actions;
 export default favoritesSlice.reducer;

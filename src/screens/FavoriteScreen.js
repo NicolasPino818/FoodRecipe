@@ -21,9 +21,6 @@ export default function FavoriteScreen() {
   const favoriteRecipes = useSelector((state) => state.favorites);
   const favoriteRecipesList = favoriteRecipes?.favoriterecipes || [];
 
-  //console.log(favoriteRecipes.favoriterecipes);
-  //console.log('favoriteRecipesList',favoriteRecipesList);
-
   const renderItem = ({ item }) => (
     
       <TouchableOpacity

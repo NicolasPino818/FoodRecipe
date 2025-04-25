@@ -15,20 +15,19 @@ import {
   import { useDispatch, useSelector } from "react-redux";
   import { toggleFavorite } from "../redux/favoritesSlice";
   
-  export default function CustomRecipesScreen() {
+  export default function CustomRecipesScreen(props) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
   
-    const route = useRoute();
-    const { recipe } = route.params || {}; // Pass the  object as a parameter
-    console.log('recipe',recipe);
+    const recipe = props.route.params;
     
     const favoriteRecipe = useSelector(
       (state) => state.favorites.favoriterecipes
     );
-    console.log('favoriteRecipe from custom',favoriteRecipe);
     
-    const isFavourite = favoriteRecipe.includes(recipe.idCategory); // Adjust this according to your recipe structure
+    const isFavourite = favoriteRecipe?.some(
+      (favrecipe) => favrecipe.idFood === recipe.idFood
+    );
   
     if (!recipe) {
       return (
@@ -39,7 +38,7 @@ import {
     }
   
     const handleToggleFavorite = () => {
-      dispatch(toggleFavorite(recipe)); // Adjust the action to handle recipe
+      dispatch(toggleFavorite(recipe));
     };
   
     return (
@@ -50,10 +49,18 @@ import {
       >
         {/* Recipe Image */}
         <View style={styles.imageContainer} testID="imageContainer">
-        {recipe.image && (
-            <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+          {recipe.recipeImage && typeof recipe.recipeImage === "string" ? (
+            <Image
+              source={{ uri: recipe.recipeImage }}
+              style={[styles.recipeImage, { height: hp(35) }]}
+            />
+          ) : (
+            <Text style={{ color: "#999", fontStyle: "italic", marginTop: 20 }}>
+              No image available
+            </Text>
           )}
         </View>
+
         <View
           style={styles.topButtonsContainer} testID="topButtonsContainer"
         >
@@ -73,11 +80,11 @@ import {
   
         {/* Recipe Details */}
         <View style={styles.contentContainer} testID="contentContainer">
-        <Text style={styles.recipeTitle}>{recipe.title}</Text>
-  <View style={styles.sectionContainer}>
-    <Text style={styles.sectionTitle}>Content</Text>
-    <Text style={styles.contentText}>{recipe.description}</Text>
-  </View>
+          <Text style={styles.recipeTitle}>{recipe.recipeName}</Text>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Content</Text>
+            <Text style={styles.contentText}>{recipe.recipeDescription}</Text>
+          </View>
         </View>
       </ScrollView>
     );
@@ -97,7 +104,6 @@ import {
     },
     recipeImage: {
       width: wp(98),
-      height: hp(50),
       borderRadius: 35,
       borderBottomLeftRadius: 40,
       borderBottomRightRadius: 40,
@@ -129,12 +135,14 @@ import {
       justifyContent: "space-between",
       alignItems: "center",
       paddingTop: hp(4),
+      zIndex:1000,
     },
     backButton: {
       padding: 8,
       borderRadius: 50,
       marginLeft: wp(5),
       backgroundColor: "white",
+      zIndex: 1001
     },
     favoriteButton: {
       padding: 8,
